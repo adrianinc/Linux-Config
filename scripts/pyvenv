@@ -1,0 +1,49 @@
+#!/bin/bash
+
+venvdir=~/pyvenv/
+
+print_help() {
+    printf "Usage: \n"
+    printf "\tpyvenv - List all python virtual environments\n"
+    printf "\tpyvenv [0-9] - Activate a python venv by its number\n"
+    printf "\tpyvenv [name_of_venv] - Activate a python venv by its name\n"
+    printf "\tpyvenv help|-h\n"
+}
+
+if [ "$#" -gt 1 ] 
+then 
+    print_help 
+    return
+fi
+
+if [ "$#" -eq 0 ] 
+then 
+    ls $venvdir -1 | awk '{print NR ". " $0}'
+    return 
+fi
+
+case $1 in 
+help | -h)
+    print_help
+    ;;
++([[:digit:]]) )
+    if [ $1 -gt $(ls $venvdir -1 | wc -l) ] || [ $1 -le 0 ]
+    then 
+        echo "$1 is not a valid selection. "
+        return 
+    fi
+    venv_selected=$(ls $venvdir -1 | sed -n $1p)
+    echo "Opening: $venv_selected"
+    source $venvdir/$venv_selected/bin/activate
+    ;;
+*)
+    if ls $venvdir -1 | grep -qE "^$1$";
+    then 
+        source $venvdir/$1/bin/activate 
+    else 
+        echo "$1 is not a venv"
+    fi 
+    ;;
+esac
+
+

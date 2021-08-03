@@ -1,0 +1,63 @@
+#!/bin/bash
+
+print_help () {
+    printf "Usage: \n";
+    printf "\tworkingdir [folder-name] [htb|year3|euler] \n";
+    printf "\tworkingdir ~/Documents/[path_of_new_working_directory]\n";
+    printf "\tworkingdir - home\n"; 
+}
+
+if [ "$#" -eq 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]
+then
+	print_help
+	return
+fi
+
+pattern="(^~.*)|(^$HOME)"
+if [[ $1 =~ $pattern ]] 
+then
+	printf "Invalid path. The home directory is already specified by default. Enter a path starting in the home Documents folder. \n"
+	print_help
+	return
+fi
+
+pattern_two="%"
+if [[ $1 =~ $pattern_two ]]
+then
+	printf '%s\n' "Invalid path. It cannot contain a % sign."
+	print_help
+	exit 0
+fi
+
+case $2 in 
+"htb")
+	echo "Setting the new working directory to ~/Documents/HackTheBox/$1."
+	mkdir --parent ~/Documents/HackTheBox/$1
+	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/HackTheBox/$1%g" ~/.bashrc
+	;;
+"year3")
+    echo "Setting the new working directory to ~/Documents/Computer-Science/Year-3/$1."
+	mkdir --parent ~/Documents/Computer-Science/Year-3/$1
+	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/Computer-Science/Year-3/$1%g" ~/.bashrc
+	;;
+"euler") 
+    echo "Setting the new working directory to ~/Documents/ProjectEuler/$1."
+	mkdir --parent ~/Documents/ProjectEuler/$1
+	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/ProjectEuler/$1%g" ~/.bashrc
+	;;
+"home")
+	echo "Setting the new working directory to the home directory"
+	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~%g" ~/.bashrc
+	;;
+*)
+	echo "Setting the new working directory to ~/Documents/$1"
+	mkdir --parent ~/Documents/$1
+	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/$1%g" ~/.bashrc
+	;;
+esac
+printf "\tThe working directory is stored under the variable WKG_DIR.\n"
+
+. ~/.bashrc 
+
+cd $WKG_DIR
+
