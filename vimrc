@@ -26,3 +26,10 @@ nnoremap <M-e> 4<C-e>
 nnoremap <M-k> 4k 
 nnoremap <M-j> 4j
 
+" Search for visually selected text
+"   To use the mapping, visually select the characters that are wanted in the search, 
+"   then type // to search for the next occurrence of the selected text. Then press n 
+"   to search for the next occurrence.
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
+
