@@ -1,20 +1,25 @@
 #!/bin/bash
 
+categories="htb|year2|year3|euler"
+
 print_help () {
     printf "Usage: \n";
-    printf "\tworkingdir [folder-name] [htb|year3|euler] \n";
-    printf "\tworkingdir ~/Documents/[path_of_new_working_directory]\n";
+    printf "\tworkingdir [$categories] [folder_name] \n";
+    printf "\tworkingdir - ~/Documents/[path_of_new_working_directory]\n";
     printf "\tworkingdir - home\n"; 
+    printf "\tworkingdir [-l | --list] [$categories] \n"; 
+    printf "\tworkingdir [-o | --open] [$categories] [name/substring of directory] \n"; 
+    printf "\tworkingdir [-h | --help] \n";
 }
 
-if [ "$#" -eq 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]
+if [ "$#" -le 0 ] || [ "$#" -ge 4 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ] 
 then
 	print_help
 	return
 fi
 
-pattern="(^~.*)|(^$HOME)"
-if [[ $1 =~ $pattern ]] 
+pattern="(^~.*)|(^\/home\/$USER)"
+if [[ $2 =~ $pattern ]] 
 then
 	printf "Invalid path. The home directory is already specified by default. Enter a path starting in the home Documents folder. \n"
 	print_help
@@ -22,42 +27,129 @@ then
 fi
 
 pattern_two="%"
-if [[ $1 =~ $pattern_two ]]
+if [[ $2 =~ $pattern_two ]]
 then
 	printf '%s\n' "Invalid path. It cannot contain a % sign."
 	print_help
 	exit 0
 fi
 
-case $2 in 
-"htb")
-	echo "Setting the new working directory to ~/Documents/HackTheBox/$1."
-	mkdir --parent ~/Documents/HackTheBox/$1
-	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/HackTheBox/$1%g" ~/.bashrc
-	;;
-"year3")
-    echo "Setting the new working directory to ~/Documents/Computer-Science/Year-3/$1."
-	mkdir --parent ~/Documents/Computer-Science/Year-3/$1
-	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/Computer-Science/Year-3/$1%g" ~/.bashrc
-	;;
-"euler") 
-    echo "Setting the new working directory to ~/Documents/ProjectEuler/$1."
-	mkdir --parent ~/Documents/ProjectEuler/$1
-	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/ProjectEuler/$1%g" ~/.bashrc
-	;;
-"home")
-	echo "Setting the new working directory to the home directory"
-	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~%g" ~/.bashrc
-	;;
+# @param variable
+category_selection() {
+    case $1 in 
+    htb)
+        sourcedir=~/Documents/HackTheBox
+        ;;
+    year2)
+        sourcedir=~/Documents/Computer_Science/Year_2
+        ;;
+    year3)
+        sourcedir=~/Documents/Computer_Science/Year_3
+        ;;
+    euler) 
+        sourcedir=~/Documents/ProjectEuler
+        ;;
+    *) 
+        sourcedir="-"
+        ;;
+    esac
+}
+
+# @param directory name 
+update_workingdir() { 
+    echo "Setting the new working directory to $sourcedir/$1."
+    # mkdir --parent $sourcedir/$1
+    sed -i "s%^export WKG_DIR=.*%export WKG_DIR=$sourcedir/$1%g" ~/.bashrc
+}
+
+load_changes() {
+    printf "\tThe working directory is stored under the variable WKG_DIR.\n"
+    . ~/.bashrc 
+    cd $WKG_DIR
+}
+
+case $1 in 
+-)
+    if [ "$#" -ne 2 ] 
+    then 
+        printf "Insufficient arguments\n";
+        print_help
+        return 
+    fi 
+
+    case $2 in 
+    "home")
+        echo "Setting the new working directory to the home directory"
+        sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~%g" ~/.bashrc
+        load_changes 
+        return 
+        ;;
+    *)
+        sourcedir=~/Documents 
+        update_workingdir $1
+        load_changes 
+        return
+        ;;
+    esac 
+    ;;
+-l | --list)
+    if [ "$#" -ne 2 ] 
+    then 
+        printf "Options: $categories \n"
+        return 
+    fi 
+
+    category_selection $2
+    if [ "$sourcedir" = "-" ] 
+    then 
+        print_help 
+        return 
+    fi 
+
+    ls -1 $sourcedir 
+    return 
+    ;;
+-o | --open)
+    if [ "$#" -ne 3 ] 
+    then 
+        printf "Insufficient arguments \n";
+        print_help
+        return 
+    fi 
+
+    category_selection $2
+    if [ "$sourcedir" = "-" ] 
+    then 
+        print_help 
+        return 
+    fi 
+    results=$(ls -1 $sourcedir | grep -i $3 | wc -l)
+    if [[ $results  -eq 0 ]] 
+    then 
+        printf "No matching directories found. \n"
+        return 
+    elif [[ $results -gt 1 ]] 
+    then 
+        printf "Multiple possible matches found: \n" 
+        ls -1 $sourcedir | grep -i $3 
+        return 
+    else 
+        match=$(ls -1 $sourcedir | grep -i $3) 
+        update_workingdir $match
+        load_changes
+        return 
+    fi 
+    ;;
 *)
-	echo "Setting the new working directory to ~/Documents/$1"
-	mkdir --parent ~/Documents/$1
-	sed -i "s%^export WKG_DIR=.*%export WKG_DIR=~/Documents/$1%g" ~/.bashrc
+    category_selection $1
+    if [ "$sourcedir" = "-" ] 
+    then 
+        print_help 
+        return 
+    fi 
+    update_workingdir $1
+    load_changes 
+    return 
 	;;
 esac
-printf "\tThe working directory is stored under the variable WKG_DIR.\n"
-
-. ~/.bashrc 
-
-cd $WKG_DIR
 
