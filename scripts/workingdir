@@ -58,7 +58,7 @@ category_selection() {
 # @param directory name 
 update_workingdir() { 
     echo "Setting the new working directory to $sourcedir/$1."
-    # mkdir --parent $sourcedir/$1
+    mkdir --parent $sourcedir/$1
     sed -i "s%^export WKG_DIR=.*%export WKG_DIR=$sourcedir/$1%g" ~/.bashrc
 }
 
