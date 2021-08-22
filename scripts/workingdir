@@ -86,7 +86,7 @@ case $1 in
         ;;
     *)
         sourcedir=~/Documents 
-        update_workingdir $1
+        update_workingdir $2
         load_changes 
         return
         ;;
@@ -147,7 +147,7 @@ case $1 in
         print_help 
         return 
     fi 
-    update_workingdir $1
+    update_workingdir $2
     load_changes 
     return 
 	;;
