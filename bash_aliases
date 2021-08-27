@@ -24,6 +24,9 @@ fi
 alias workingdir='source workingdir'
 alias wkgdir='cd $WKG_DIR'
 
+# Update VIM plugins
+alias vimpluginupdate="vim -c ':PlugUpdate' -c ':CocUpdate' -c ':qa'"
+
 # pyvenv aliases 
 # pyvenv is used to quickly list and launch a python virtual environment
 alias pyvenv='source pyvenv'
