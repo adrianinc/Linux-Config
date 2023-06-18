@@ -30,9 +30,11 @@ agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
     agent_start
 fi
-for sshkey in "${sshkeys[@]}"; do
-	ssh-add $sshkey
-done
+if [ $agent_run_state -gt 0 ]; then
+	for sshkey in "${sshkeys[@]}"; do
+		ssh-add $sshkey
+	done
+fi
 
 unset env
 
