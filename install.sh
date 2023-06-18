@@ -6,7 +6,15 @@ echo "Installing Linux config files..."
 echo "1. Copying bash scripts to .bashrc.d. "
 mkdir ~/.bashrc.d
 cp -v ./bashrc.d/* ~/.bashrc.d/
-echo "\n\nsource ~/.bashrc.d/bash_workingdir.sh \nsource ~/github_ssh_agent.sh \nsource ~/terminal_prompt.sh\n\n" >> ~/.bashrc 
+
+printf '%s\n' 'if [ -d ~/.bashrc.d ]; then ' \
+	'	for rc in ~/.bashrc.d/*; do ' \
+	'		if [ -f "$rc" ]; then' \
+	'			. "$rc" ' \
+	'		fi ' \
+	'	done ' \
+'fi ' \
+'unset rc ' >> ~/.bashrc
 echo ""
 
 # Copying user scripts
