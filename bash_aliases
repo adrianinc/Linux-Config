@@ -7,6 +7,7 @@ alias em='emacs -nw'
 alias dd='dd status=progress'
 alias _='sudo'
 alias _i='sudo -i'
+alias vim='nvim'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

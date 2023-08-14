@@ -8,9 +8,11 @@ set ruler
 set autoindent
 set smartindent
 
-set softtabstop=4
-set shiftwidth=2
 set tabstop=4
+set shiftwidth=0
+set softtabstop=-1
+
+set foldmethod=indent
 
 set hlsearch
 set incsearch
@@ -25,13 +27,13 @@ set guicursor=
 inoremap <S-Tab> <C-d>
 
 "See invisible characters
-set list listchars=tab:>\ ,trail:+,eol:$
+"set list listchars=tab:>\ ,trail:+,eol:$
 
 "wrap to next line when end of line is reached
 set whichwrap+=<,>,[,]
 
 map <M-y> 4<C-y>
-map <M-e> 4<C-e>
+map <M-w> 4<C-e>
 map <M-j> 4j
 map <M-k> 4k
 
@@ -41,4 +43,6 @@ map <M-k> 4k
 "   to search for the next occurrence.
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 
-
+call plug#begin()
+Plug 'github/copilot.vim'
+call plug#end()
