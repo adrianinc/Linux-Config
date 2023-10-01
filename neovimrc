@@ -1,3 +1,4 @@
+set background=light
 
 set number
 set expandtab
@@ -32,10 +33,10 @@ inoremap <S-Tab> <C-d>
 "wrap to next line when end of line is reached
 set whichwrap+=<,>,[,]
 
-map <M-y> 4<C-y>
-map <M-w> 4<C-e>
-map <M-j> 4j
-map <M-k> 4k
+map \ 4<C-y>
+map ∑ 4<C-e>
+map ∆ 4j
+map ˚ 4k
 
 " Search for visually selected text
 "   To use the mapping, visually select the characters that are wanted in the search, 

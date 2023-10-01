@@ -2,33 +2,32 @@
 
 echo "Installing Linux config files..."
 
-# Copying bashrc.d scripts
-echo "1. Copying bash scripts to .bashrc.d. "
-mkdir ~/.bashrc.d
-cp -v ./bashrc.d/* ~/.bashrc.d/
+# Copying zshrc.d scripts
+echo "1. Copying bash scripts to .zshrc.d. "
+mkdir ~/.zshrc.d
+cp -v ./zshrc.d/* ~/.zshrc.d/
 
-printf '%s\n' 'if [ -d ~/.bashrc.d ]; then ' \
-	'	for rc in ~/.bashrc.d/*; do ' \
-	'		if [ -f "$rc" ]; then' \
-	'			. "$rc" ' \
-	'		fi ' \
-	'	done ' \
-'fi ' \
-'unset rc ' >> ~/.bashrc
-echo ""
+#printf '%s\n' 'if [ -d ~/.bashrc.d ]; then ' \
+#	'	for rc in ~/.bashrc.d/*; do ' \
+#	'		if [ -f "$rc" ]; then' \
+#	'			. "$rc" ' \
+#	'		fi ' \
+#	'	done ' \
+#'fi ' \
+#'unset rc ' >> ~/.bashrc
+#echo ""
 
 # Copying user scripts
-echo "2. Copying user scripts to ~/.local/bin. "
-mkdir -p ~/.local/bin
-cp -v ./scripts/* ~/.local/bin/
+echo "2. Copying user scripts to /usr/local/bin/ "
+cp -v ./scripts/* /usr/local/bin/
 echo ""
 
 echo "3. Copying bash script aliases into ~/.bash_aliases "
-cat bash_aliases >> ~/.bash_aliases
+cat zsh_aliases >> ~/.zsh_aliases
 echo ""
 
 echo "4. Copying script to ~/.bash_logout "
-cat bash_logout >> ~/.bash_logout 
+cat zsh_logout >> ~/.zsh_logout 
 echo ""
 
 echo "5. Copying tmux configuration to ~/.tmux.conf"
